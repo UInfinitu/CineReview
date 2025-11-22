@@ -1,0 +1,62 @@
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using CineReview.DTOs;
+using CineReview.Models;
+using CineReview.Repositories.Interfaces;
+using CineReview.Services.Interfaces;
+
+namespace CineReview.Services
+{
+    public class SerieService : ISerieService
+    {
+        private readonly ISerieRepository _repo;
+        private readonly IMapper _mapper;
+
+        public SerieService(ISerieRepository repo, IMapper mapper)
+        {
+            _repo = repo;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<SerieReadDto>> GetAllAsync()
+        {
+            var movies = await _repo.GetAllAsync();
+            return _mapper.Map<IEnumerable<SerieReadDto>>(movies);
+        }
+
+        public async Task<MovieReadDto> GetByIdAsync(int id)
+        {
+            var movie = await _repo.GetByIdAsync(id);
+            if (movie == null) return null;
+            return _mapper.Map<MovieReadDto>(movie);
+        }
+
+        public async Task<MovieReadDto> CreateAsync(MovieCreateDto dto)
+        {
+            var movie = _mapper.Map<Movie>(dto);
+            await _repo.AddAsync(movie);
+            if (!await _repo.SaveChangesAsync()) return null;
+            return _mapper.Map<MovieReadDto>(movie);
+        }
+
+        public async Task<MovieReadDto> UpdateAsync(int id, MovieCreateDto dto)
+        {
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return null;
+
+            _mapper.Map(dto, existing);
+            _repo.Update(existing);
+            if (!await _repo.SaveChangesAsync()) return null;
+            return _mapper.Map<MovieReadDto>(existing);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return false;
+            _repo.Remove(existing);
+            return await _repo.SaveChangesAsync();
+        }
+    }
+}

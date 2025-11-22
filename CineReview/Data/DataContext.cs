@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CineReview.Data
 {
-    public class DataContext : DbContext
+    public class DataBaseContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        public DataBaseContext(DbContextOptions<DataBaseContext> options) : base(options)
         {
         }
 
