@@ -1,5 +1,5 @@
-
 using CineReview.Data;
+using CineReview.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace CineReview
@@ -15,10 +15,12 @@ namespace CineReview
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-            builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
 
             var app = builder.Build();
 
